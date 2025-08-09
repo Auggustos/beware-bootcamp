@@ -4,7 +4,9 @@ import Image from "next/image";
 import CategorySelector from "@/components/common/category-selector";
 import Footer from "@/components/common/footer";
 import Header from "@/components/common/header";
+import PartnerBrands from "@/components/common/partner-brands";
 import ProductsList from "@/components/common/products-list";
+import { Card } from "@/components/ui/card";
 import { db } from "@/db";
 import { productTable } from "@/db/schema";
 
@@ -37,6 +39,11 @@ const Home = async () => {
             sizes="100vw"
             className="h-auto w-full"
           />
+        </div>
+
+        <div className="space-y-6">
+          <h3 className="px-5 font-semibold">Marcas parceiras</h3>
+          <PartnerBrands />
         </div>
 
         <ProductsList products={products} title="Mais vendidos" />

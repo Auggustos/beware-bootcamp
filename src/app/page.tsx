@@ -3,10 +3,8 @@ import Image from "next/image";
 
 import CategorySelector from "@/components/common/category-selector";
 import Footer from "@/components/common/footer";
-import Header from "@/components/common/header";
-import PartnerBrands from "@/components/common/partner-brands";
-import ProductsList from "@/components/common/products-list";
-import { Card } from "@/components/ui/card";
+import { Header } from "@/components/common/header";
+import ProductList from "@/components/common/product-list";
 import { db } from "@/db";
 import { productTable } from "@/db/schema";
 
@@ -16,14 +14,12 @@ const Home = async () => {
       variants: true,
     },
   });
-
   const newlyCreatedProducts = await db.query.productTable.findMany({
     orderBy: [desc(productTable.createdAt)],
     with: {
       variants: true,
     },
   });
-
   const categories = await db.query.categoryTable.findMany({});
 
   return (
@@ -41,12 +37,7 @@ const Home = async () => {
           />
         </div>
 
-        <div className="space-y-6">
-          <h3 className="px-5 font-semibold">Marcas parceiras</h3>
-          <PartnerBrands />
-        </div>
-
-        <ProductsList products={products} title="Mais vendidos" />
+        <ProductList products={products} title="Mais vendidos" />
 
         <div className="px-5">
           <CategorySelector categories={categories} />
@@ -63,7 +54,7 @@ const Home = async () => {
           />
         </div>
 
-        <ProductsList products={newlyCreatedProducts} title="Novos produtos" />
+        <ProductList products={newlyCreatedProducts} title="Novos produtos" />
         <Footer />
       </div>
     </>

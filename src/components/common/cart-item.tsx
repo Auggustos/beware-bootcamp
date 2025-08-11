@@ -7,6 +7,7 @@ import { MinusIcon, PlusIcon, TrashIcon } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 
+import { addProductToCart } from "@/actions/add-cart-product";
 import { decreaseCartProductQuantity } from "@/actions/decrease-cart-product-quantity";
 import { removeProductFromCart } from "@/actions/remove-cart-product";
 import { formatCentsToBRL } from "@/helpers/money";
@@ -17,6 +18,7 @@ interface CartItemProps {
   productName: string;
   productVariantName: string;
   productVariantImageUrl: string;
+  productVariantId: string;
   productVariantPriceInCents: number;
   quantity: number;
 }
@@ -25,6 +27,7 @@ const CartItem = ({
   id,
   productName,
   productVariantName,
+  productVariantId,
   productVariantImageUrl,
   productVariantPriceInCents,
   quantity,
@@ -46,8 +49,28 @@ const CartItem = ({
     },
   });
 
+  const increaseCartQuantityMutation = useMutation({
+    mutationKey: ["decrease-cart-product-quantity"],
+    mutationFn: () =>
+      addProductToCart({ productVariantId: productVariantId, quantity: 1 }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+
   const handleDeleteClick = () => {
     removeProductFromCartMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Produto removido do carrinho");
+      },
+      onError: () => {
+        toast.error("Erro ao remover do produto do carrinho");
+      },
+    });
+  };
+
+  const handleDecreaseQuantityClick = () => {
+    decreaseCartQuantityMutation.mutate(undefined, {
       onSuccess: () => {
         toast.success("Quantidade do produto diminuida");
       },
@@ -57,13 +80,13 @@ const CartItem = ({
     });
   };
 
-  const handleDecreaseQuantityClick = () => {
-    decreaseCartQuantityMutation.mutate(undefined, {
+  const handleIncreaseQuantityClick = () => {
+    increaseCartQuantityMutation.mutate(undefined, {
       onSuccess: () => {
-        toast.success("Produto removido do carrinho");
+        toast.success("Produto adicionado do carrinho");
       },
       onError: () => {
-        toast.error("Erro ao remover produto do carrinho");
+        toast.error("Erro ao adicionar produto do carrinho");
       },
     });
   };
@@ -91,7 +114,11 @@ const CartItem = ({
               <MinusIcon />
             </Button>
             <p className="text-xs font-medium">{quantity}</p>
-            <Button className="h-4 w-4" variant="ghost" onClick={() => {}}>
+            <Button
+              className="h-4 w-4"
+              variant="ghost"
+              onClick={handleIncreaseQuantityClick}
+            >
               <PlusIcon />
             </Button>
           </div>

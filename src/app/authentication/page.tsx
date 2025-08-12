@@ -1,6 +1,6 @@
 import { AppWindowIcon, CodeIcon } from "lucide-react";
 
-import Header from "@/components/common/header";
+import { Header } from "@/components/common/header";
 import { Button } from "@/components/ui/button";
 import {
   Card,
